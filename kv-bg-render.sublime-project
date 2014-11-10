@@ -3,7 +3,7 @@
     [
         {
             "path": ".",
-            "file_include_patterns": ["*.js", "*.html", "*.json", "*.sublime-project"],
+            "file_include_patterns": ["*.js", "*.html", "*.json", "*.sublime-project", "*.css"],
             "folder_exclude_patterns": ["node_modules"]
         }
     ],
