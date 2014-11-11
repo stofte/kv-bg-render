@@ -54,19 +54,21 @@
     var polygonShift = stageHeight*0.8;
 
     var polys = [];
-    for (var i = 0; i < 15; i++) {
+    for (var i = 0; i < 20; i++) {
         var polygon = createSprite();
-        polygon.rotation = rotation;
-        // fix this shit
-        var finalx = Math.random()*stageWidth;
-        polygon.position.__finalx = finalx;
-        polygon.position.set(finalx - polygonShift, 0);
+        
+        var shift = 100+Math.random()*2*polygonShift;
+        
+        polygon._flip = Math.random() > 0.5;
+        polygon._initialX = Math.random()*stageWidth - (polygon._flip?-1:1)*shift;
+        polygon._initialY = polygonShift - shift;
+        polygon._shift = shift;
+
+        polygon.position.set(polygon._initialX, polygon._initialY);
         polygon.anchor.set(1,1);
-        if (Math.random() > 0.5) {
-            polygon.scale.x = -1;
-            polygon.position.x = finalx + polygonShift;
-            polygon.rotation *= -1;
-        }
+        polygon.rotation = (polygon._flip?-1:1)*rotation;
+        polygon.scale.x = polygon._flip ? -1 : 1;
+
         polys.push(polygon);
         stage.addChild(polygon);
     }
@@ -80,10 +82,10 @@
         var delta = (new Date().getTime() - start_ts)/duration;
         if (delta > 1) return;
         requestAnimFrame(animate);
-        var shift = easeOutCubic(delta)*polygonShift;
         polys.forEach(function(p) {
-            p.position.x = p.position.__finalx + (p.scale.x != -1?1:-1)*shift;
-            p.position.y = shift;
+            var shift = easeOutCubic(delta) * p._shift;
+            p.position.x = p._initialX + (p._flip ?-1:1)*shift;
+            p.position.y = p._initialY + shift;
         });
         renderer.render(stage);
     }
